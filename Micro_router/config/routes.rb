@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
   #match '/students(/:id1(/:action(/:id2)))' => 'students#ric_get', via: :get
 
+  #get 'courses/add', :to => "courses#create"
+
   match ':controller(/:id1(/:action(/:id2)))', :via => [:post, :get]
 
   # The priority is based upon order of creation: first created -> highest priority.
