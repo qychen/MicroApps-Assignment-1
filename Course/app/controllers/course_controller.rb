@@ -69,25 +69,25 @@ end
 # Delete Actions 
 
 def delete
- @courses = Course.delete
- render json: @courses
+ courses = Course.delete
+ render json: courses
 end
 
 def deleteFromField
- @courses = Course.delete
- render json: @courses
+ courses = Course.delete
+ render json: courses
 end
 
 
 # Put Actions
 
 def update 
- @course_update = Course.update
- render json: @courses
+ course_update = Course.update
+ render json: courses
 end
 
 
 def updateField 
- @course_update = Course.update
- render json: @courses
+ course_update = Course.update
+ render json: courses
 end
