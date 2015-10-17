@@ -76,6 +76,7 @@ end
 
 def deleteFromField
  courses = Course.delete
+ course.delete(params[:field]: course + "," + params[:id2])
  render json: courses
 end
 
@@ -83,7 +84,7 @@ end
 # Put Actions
 
 def update 
- course_update = Course.update
+ course = Course.update
  render json: courses
 end
 
