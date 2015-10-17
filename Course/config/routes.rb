@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   post '/courses', to: 'course#create'
-  post '/courses/:id/:field/:id2', to: 'course#addToField'
   
   get '/courses', to: 'course#read'
   get '/courses/:id', to: 'course#readOne'
@@ -16,6 +15,7 @@ Rails.application.routes.draw do
 
   put '/courses/:id', to: 'course#update'
   put '/courses/:id/:field', to: 'course#updateField'
+  put '/courses/:id/:field/:id2', to: 'course#addToField'
 
 
 

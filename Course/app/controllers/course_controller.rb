@@ -1,5 +1,5 @@
 class CourseController < ApplicationController
-
+	protect_from_forgery with: :null_session
 
 # create course
 # URL: /courses/addcourse
@@ -34,11 +34,12 @@ end
 
 
 def addToField 
-	course = Course.find(params[:id])[params[:field]]
+	course = Course.find(params[:id])
 	if course.nil?
-	 	render json {status: 500}
+	 	render json: {status: 500}
 	else
-		course.update(params[:field]: course + "," + params[:id2]) 
+		students = course[params[:field]]
+		course.update(params[:field] => students + "," + params[:id2])
 	 	render json: course
 	end 	
 end
@@ -52,7 +53,7 @@ end
 def readFromField 
 	 course = Course.find(params[:id])[params[:field]]
 	 if course.nil?
-		 	render json {status: 500}
+		 	render json: {status: 500}
 	 else
 		 	render json: course
 	 end 	
@@ -90,4 +91,5 @@ end
 def updateField 
  course_update = Course.update
  render json: courses
+end
 end
