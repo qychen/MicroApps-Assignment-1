@@ -1,0 +1,31 @@
+GRANT ALL PRIVILEGES ON Courses_development.* 
+TO 'user'@'localhost'
+IDENTIFIED BY 'secretpassword' //creates user
+SHOW GRANTS FOR 'username'@'localhost'; // shows privelegs given
+
+
+CREATE DATABASE;
+SHOW DATABASES; 
+
+user login: mysql -u user -p Courses_development
+password: secretpassword
+
+rake db:schema:dump // connects to the database, shows schema of the database creates,and a schema file should be in the 'db' folder 
+
+// Making Tables: 
+
+migrations allow you to make tables 
+
+migrate - change database from one state to another 
+move "up" to a new state or "down" to a previous state 
+
+CRUD 
+
+Create - 
+
+Read 
+
+Update 
+
+Delete 
+
