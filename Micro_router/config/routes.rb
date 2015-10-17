@@ -1,11 +1,15 @@
 Rails.application.routes.draw do
-  match "students", :to => "students#index", :via => :get
+  #match "students", :to => "students#index", :via => :get
 
-  match "students/:id1", :to => "students#info", :via => :get
+  #match "students/:id1", :to => "students#info", :via => :get
 
-  match ':controller(/:id1(/:action(/:id2)))', :via => :get
+  #match ':controller(/:id1(/:action(/:id2)))', :via => :get
 
-  match ':controller(/:id1(/:action(/:id2)))', :to => "students#ric", :via => :post
+  #match "/students", :to => "students#ric_post", :via => :post
+
+  #match '/students(/:id1(/:action(/:id2)))' => 'students#ric_get', via: :get
+
+  match ':controller(/:id1(/:action(/:id2)))', :via => [:post, :get]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
