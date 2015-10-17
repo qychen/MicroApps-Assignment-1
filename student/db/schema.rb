@@ -13,8 +13,8 @@
 
 ActiveRecord::Schema.define(version: 20151017194136) do
 
-  create_table "users", id: false, force: :cascade do |t|
-    t.integer  "id",               limit: 4
+  create_table "users", force: :cascade do |t|
+    t.integer  "unique_id",        limit: 4
     t.string   "first_name",       limit: 100
     t.string   "last_name",        limit: 255
     t.integer  "courses_enrolled", limit: 4
