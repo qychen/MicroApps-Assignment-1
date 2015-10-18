@@ -2,6 +2,23 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
+  post '/courses', to: 'course#create'
+  
+  get '/courses', to: 'course#read'
+  get '/courses/:id', to: 'course#readOne'
+  get '/courses/:id/:field', to: 'course#readField'
+
+ 
+  
+  delete '/courses/:id/:field/:id2', to: 'course#deleteFromField'
+  delete '/courses/:id', to: 'course#delete'
+
+  put '/courses/:id', to: 'course#update'
+  put '/courses/:id/:field', to: 'course#updateField'
+  put '/courses/:id/:field/:id2', to: 'course#addToField'
+
+
+
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 

@@ -1,92 +1,111 @@
 class CourseController < ApplicationController
-
+	protect_from_forgery with: :null_session
 
 # create course
 # URL: /courses/addcourse
 
+=begin
+
+  post '/courses', to: 'Course#create'
+  post '/courses/:id/:field/:id', to: 'Course#addToField'
+  
+  get '/courses', to: 'Course#read'
+  get '/courses/:id', to: 'Course#readOne'
+  get '/courses/:id/:field', to: 'Course#readField'
+
+ 
+  
+  delete '/courses/:id/:field/:id', to: 'Course#deleteFromField'
+  delete '/courses/:id', to: 'Course#delete'
+
+  put '/courses/:id', to: 'Course#update'
+  put '/courses/:id/:field', to: 'Course#updateField'
+
+=end
+
+#Post Actions
+
 def create 
- @course_add = Course.new(params[:courses], params[:addcourse])
-   if @course_add.save 
-      @result = 'success'
-      redirect_to @course_add
-   end
- end
+
+	course = Course.create
+	render json: course
 
 end
 
-# create student
-# URL: /courses/id/addstudent/id
 
-def create 
- @student_add = Course.new(params[:courses],params[:id], params[:addstudent],params[:id])
-   if @student_add.save 
-      @result = 'success'
-      redirect_to @student_add
-   end
- end
+def addToField 
+	course = Course.find(params[:id])
+	if course.nil?
+	 	render json: {status: 500}
+	else
+		students = course[params[:field]]
+		course.update(params[:field] => students + "," + params[:id2])
+	 	render json: course
+	end 	
+end
+#Get Actions
 
+def read 
+	courses = Course.all
+	render json: courses
 end
 
-# read courses
-# URL: /courses
+def readFromField 
+	 course = Course.find(params[:id])[params[:field]]
+	 if course.nil?
+		 	render json: {status: 500}
+	 else
+		 	render json: course
+	 end 	
+end
 
-def read 
- @courses = Course.all(params[:courses])
-   if 
-      Course.all.to_json
-      respond_to do |format|
-      format.json{render json:@result}
-      redirect_to @course
-   end
- end
+ #case field 
 
-# read one course
-# URL: /courses/id
+ #when "title"
+ #puts 
 
-def read 
- @course = Course.find(params[:courses], params[:id])
-   if 
-      Course.to_json
-      respond_to do |format|
-      format.json{render json:@result}
-      redirect_to @course
-   end
- end
 
-# update course info
-# URL: /courses/id/update
+
+
+# Delete Actions 
+
+def delete
+	course = Course.find(params[:id])
+	course = Course.delete
+	render json: course
+end
+
+def deleteFromField
+	course = Course.find(params[:id])
+	if course.nil?
+	 	render json: {status: 500}
+	else
+		students = course[params[:field]]
+		field = students.split(',')
+		field.delete(params[:id2])
+		course.update(params[:field] => field.join(','))
+	 	render json: course
+
+	end 
+end
+
+
+# Put Actions
 
 def update 
- @course_update = Course.find(params[:courses],params[:id], params[:update])
-   if @course_update.update(params[:course_update]) 
-      @course_update.save
-      Course.to_json
-      respond_to do |format|
-      format.json{render json:@result}
-      redirect_to @course_update
-   else @result = 'update fail'
-   end
- end
+	course = Course.find(params[:id])
+	course = 
+	if course.nil?
+	 	render json: {status: 500}
+	end 
+
+end
 
 
-# delete course
-# URL: /courses/id/delete
+def updateField 
+	course_update = Course.update
+	render json: courses
 
-def delete 
- @course_delete = Course.find(params[:courses],params[:id],params[:delete])
-   if @course_delete.delete
-      @result = 'course successfully deleted' 
-      redirect_to @course_delete
-   end
- end
 
-# delete student
-# URL: /courses/id/student/id/delete
-
-def delete 
- @student_delete = Course.update(params[:courses],params[:id], params[:student], params[:id],params[:delete])
-   if @student_delete.delete
-      @result = 'student successfully deleted' 
-      redirect_to @course_delete
-   end
- end
+end
+end
