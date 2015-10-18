@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
  
   
-  delete '/courses/:id/:field/:id', to: 'course#deleteFromField'
+  delete '/courses/:id/:field/:id2', to: 'course#deleteFromField'
   delete '/courses/:id', to: 'course#delete'
 
   put '/courses/:id', to: 'course#update'
