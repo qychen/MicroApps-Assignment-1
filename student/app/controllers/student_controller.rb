@@ -1,11 +1,12 @@
 class StudentController < ApplicationController
+	protect_from_forgery with: :null_session
 	layout false
   #action we are asking this view to perform
   def index
   end
 
   	def show
-		students = Student.all
+		students = User.all
 		render json: @students
 	end
 
@@ -16,9 +17,9 @@ class StudentController < ApplicationController
 	def add_course
 		id1 = params['id1']
 		id2 = params['id2']
-		student = Student.get(id: id1)
+		student = User.find(id1)
 		courses = student[:courses_enrolled]
-		student.update(courses_enrolled: (courses + "," + id2))
+		student.update(courses_enrolled: courses + "," + id2)
 		render json: student
 	end
 

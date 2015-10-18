@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
-  get 'student/index'
+	get '/students', to: 'student#show'
+	put '/students/:id1/coursesEnrolled/:id2', to: 'student#add_course'
+	post '/students/:id1/coursesEnrolled/:id2', to: 'student#replace_courses'
+
+
+	#kay added
+	put '/students/:id1/coursesTaken/:id3', to: 'student#add_course'
+	post '/students/:id1/coursesTaken/:id3', to: 'student#replace_courses'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
