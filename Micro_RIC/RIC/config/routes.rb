@@ -1,5 +1,14 @@
 Rails.application.routes.draw do
-  match ':controller(/:id1(/:action(/:id2)))', :via => [:get, :post]
+
+  get "students/:id1/lastName" => "students#changeinfo"
+  get "students/:id1/firstName" => "students#changeinfo"
+  get "students/:id1" => "students#changeinfo"  
+
+  get "courses/:id1/room" => "courses#changeinfo"
+  get "courses/:id1/title" => "courses#changeinfo"
+  get "courses/:id1" => "courses#changeinfo"
+
+  match ':controller(/:id1(/:action(/:id2)))', :via => [:get, :post, :put]
 
 
   # The priority is based upon order of creation: first created -> highest priority.

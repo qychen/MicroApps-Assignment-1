@@ -70,27 +70,42 @@ end
 # Delete Actions 
 
 def delete
- courses = Course.delete
- render json: courses
+	course = Course.find(params[:id])
+	course = Course.delete
+	render json: course
 end
 
 def deleteFromField
- courses = Course.delete
- course.delete(params[:field]: course + "," + params[:id2])
- render json: courses
+	course = Course.find(params[:id])
+	if course.nil?
+	 	render json: {status: 500}
+	else
+		students = course[params[:field]]
+		field = students.split(',')
+		field.delete(params[:id2])
+		course.update(params[:field] => field.join(','))
+	 	render json: course
+
+	end 
 end
 
 
 # Put Actions
 
 def update 
- course = Course.update
- render json: courses
+	course = Course.find(params[:id])
+	course = 
+	if course.nil?
+	 	render json: {status: 500}
+	end 
+
 end
 
 
 def updateField 
- course_update = Course.update
- render json: courses
+	course_update = Course.update
+	render json: courses
+
+
 end
 end
