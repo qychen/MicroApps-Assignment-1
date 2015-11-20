@@ -7,7 +7,7 @@ class CourseController < ApplicationController
 =begin
 
   post '/courses', to: 'Course#create'
-  post '/courses/:id/:field/:id', to: 'Course#addToField'
+  
 
   get '/courses', to: 'Course#read'
   get '/courses/:id', to: 'Course#readOne'
@@ -32,8 +32,8 @@ class CourseController < ApplicationController
 
   end
 
-
-  def addToField 
+#put
+  def update
     course = Course.find(params[:id])
     if course.nil?
       render json: {status: 500}
@@ -50,6 +50,17 @@ class CourseController < ApplicationController
     render json: courses
   end
 
+
+  def readOne
+    course = Course.find(params[:id])
+    if course.nil?
+      render json: {status: 500}
+    else
+      render json: course
+    end 
+  end
+
+
   def readFromField 
     course = Course.find(params[:id])[params[:field]]
     if course.nil?
@@ -61,17 +72,12 @@ class CourseController < ApplicationController
 
   #case field 
 
-  #when "title"
-  #puts 
-
-
-
 
   # Delete Actions 
 
   def delete
     course = Course.find(params[:id])
-    course = Course.delete
+    course = course.delete
     render json: course
   end
 
@@ -92,20 +98,4 @@ class CourseController < ApplicationController
 
   # Put Actions
 
-  def update 
-    course = Course.find(params[:id])
-    course = 
-      if course.nil?
-        render json: {status: 500}
-      end 
-
-  end
-
-
-  def updateField 
-    course_update = Course.update
-    render json: courses
-
-
-  end
 end

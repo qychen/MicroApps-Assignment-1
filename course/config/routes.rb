@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   get '/courses', to: 'course#read'
   get '/courses/:id', to: 'course#readOne'
-  get '/courses/:id/:field', to: 'course#readField'
+  get '/courses/:id/:field', to: 'course#readFromField'
 
   delete '/courses/:id/:field/:id2', to: 'course#deleteFromField'
   delete '/courses/:id', to: 'course#delete'
