@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   put '/students/:student_id/:field', to: 'students#update_field'
 
   delete '/students/:student_id', to: 'students#delete'
+  delete '/students/:student_id/:field', to: 'students#delete_field'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

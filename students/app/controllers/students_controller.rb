@@ -148,4 +148,24 @@ class StudentsController < ApplicationController
     end
     render json: field
   end
+
+  def delete_field
+    student = Student.find(params[:student_id]) rescue nil
+    if student
+      field_name = params[:field].to_sym
+      if LIST_FIELDS.include? field_name
+        courses = student[field_name]
+        pupil = params[:student]
+        course = pupil[field_name]
+        if courses.delete(course)
+          courses.save
+        end
+        field = { status: 200, field_name => courses }
+      else
+        field = { status: 400 }
+      end
+    else
+      field = { status: 400 }
+    end
+  end
 end
