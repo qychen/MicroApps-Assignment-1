@@ -32,12 +32,11 @@ LIST_FIELDS = [:students]
 
     new_course = Course.new
     course_info = params[:course]
-    
     FIELDS.each do |f|
    	new_course[f] = course_info[f]
     new_course.save
 	end
-    render json: { status:200, new_course:new_course}
+    render json: { status:200, new_course: new_course}
 
   end
 
@@ -47,17 +46,21 @@ LIST_FIELDS = [:students]
     field_name = params[:field].to_sym
     field2 = field[field_name]
     if field2.nil? 
-      return json: {status:400}
+      field2 = String.new
+    end
+
   	if LIST_FIELDS.include? field_name
-  		new_field = params[:field]
+  		new_field = params[:course]
+      new_field = new_field[params[:field]]
       new_field = new_field.split(",")
       split_field = field2.split(",")
       split_field << new_field # add element(s) to array
-  		field = split_field.join(',')
-  		return render json: {status:200, field:field}
+  		field[field_name] = split_field.uniq.join(',')
   		field.save
-  	  end
-     end
+      return render json: {status:200, field:field}
+  	
+    end
+     
   		  
  end
 
@@ -156,8 +159,9 @@ LIST_FIELDS = [:students]
     	field_name = params[:field].to_sym
  		
       	if LIST_FIELDS.include? field_name
-			       removable_content = params[:field]
-			       if removable_content
+			       removable_content = params[:course]
+             removable_content2 = removable_content[params[:field]]
+			       if removable_content2
 		  		      field_content = course[field_name]
 		  		      
                 if field_content
