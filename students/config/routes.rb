@@ -1,16 +1,20 @@
 Rails.application.routes.draw do
   get '/students', to: 'students#index'
   get '/students/:student_id', to: 'students#read'
+  get '/students/:student_id/:field', to: 'students#read_field'
 
   post '/students', to: 'students#create'
 
   put '/students/:student_id', to: 'students#update'
+  put '/students/:student_id/:field', to: 'students#update_field'
+
+  delete '/students/:student_id', to: 'students#delete'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root to: redirect('https://github.com/Tubebaum/MicroApps-Assignment-1')
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
