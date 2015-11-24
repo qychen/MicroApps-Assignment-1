@@ -3,8 +3,8 @@ require 'net/http'
 class StudentsController < ApplicationController
   protect_from_forgery with: :null_session
 
-  $url_ric = "http://45.55.44.135:4000/"
-  $url_router = "http://45.55.44.135:3000/"
+  $url_ric = "http://159.203.107.66:80/"
+  $url_router = "http://45.55.44.135:80/"
   $url_student = "http://159.203.110.135:80/"
   $url_course = "http://159.203.92.173:80/"
 =begin
@@ -130,8 +130,16 @@ class StudentsController < ApplicationController
 
   end
 
+  def create
+	path = request.path
+	uri = URI($url_student + path)
+
+  end
+
   
   def addcourselist
+  	print request.request_method
+  	print request.body
 	path = request.path
 	uri = URI($url_ric + path)
 	response = Net::HTTP.get_response(uri) # => String

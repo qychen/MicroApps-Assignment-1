@@ -11,27 +11,25 @@ Rails.application.routes.draw do
 
   # ------------  Students ------------------------
 
-  put "students/:id1/coursesEnrolled/:id2" => "students#addcourse"
-  delete "students/:id1/coursesEnrolled/:id2" => "students#dropcourse"
-  put "students/:id1/coursesEnrolled" => "students#addcourselist"
-  delete "students/:id1/coursesEnrolled" => "students#dropcourselist"
+  #put "students/:id1/coursesEnrolled/:id2" => "students#addcourse"
+  #delete "students/:id1/coursesEnrolled/:id2" => "students#dropcourse"
+  #put "students/:id1/coursesTaken/:id2" => "students#addcourse"
+  #delete "students/:id1/coursesTaken/:id2" => "students#dropcourse"
 
-  put "students/:id1/coursesTaken/:id2" => "students#addcourse"
-  delete "students/:id1/coursesTaken/:id2" => "students#dropcourse"
-  put "students/:id1/coursesTaken" => "students#addcourselist"
-  delete "students/:id1/coursesTaken" => "students#dropcourselist"
+  post "students/:id/:field" => "students#addcourselist"
+  delete "students/:id/:field" => "students#dropcourselist"
+  put "students/:id/:field" => "students#rewritecourselist"
 
   put "students/:id1/lastName" => "students#changeinfo"
   put "students/:id1/firstName" => "students#changeinfo"
   put "students/:id1" => "students#changeinfo"
 
- # post "students/"
+  post "students/" => "students#create"
+  delete "students/:id1" => "students#delete"
 
-  get "students/:id1/lastName" => "students#doget"
-  get "students/:id1/firstName" => "students#doget"
+  get "student/" => "students#doget"
   get "students/:id1" => "students#doget"
-  get "students/:id1/coursesTaken" => "students#doget"
-  get "students/:id1/coursesEnrolled" => "students#doget"
+  get "students/:id1/:field" => "students#doget"
 
 
   # -------------  Courses ------------------------
@@ -43,6 +41,7 @@ Rails.application.routes.draw do
   put "courses/:id1/title" => "courses#changeinfo"
   put "courses/:id1" => "courses#changeinfo"
 
+  get "courses/" => "courses#doget"
   get "courses/:id1/room" => "courses#doget"
   get "courses/:id1/title" => "courses#doget"
   get "courses/:id1/students" => "courses#doget"
