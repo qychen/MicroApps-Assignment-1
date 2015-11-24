@@ -5,7 +5,23 @@ class StudentsController < ApplicationController
   LIST_FIELDS = [:courses_taken, :courses_enrolled]
 
   def index
-    students = { status: 200, students: Student.all }
+    query = String.new
+    arguments = Array.new
+    FIELDS.each do |f|
+      if params[f]
+        unless query.empty?
+          query << " AND #{f} = ?"
+        else
+          query << "#{f} = ?"
+        end
+        arguments << params[f]
+      end
+    end
+    if query.empty?
+      students = { status: 200, students: Student.all }
+    else
+      students = Student.where(query, *arguments)
+    end
     render json: students
   end
 
@@ -61,18 +77,32 @@ class StudentsController < ApplicationController
     if student
       field_name = params[:field].to_sym
       if LIST_FIELDS.include? field_name
-        course = params[:field_id]
-        course = Integer(course) rescue nil
-        if course
+        pupil = params[:student]
+        field = pupil[field_name]
+        if field
+          field = field.split(',')
           courses = student[field_name]
           unless courses
             courses = String.new
           end
           courses = courses.split(',')
-          courses << course.to_s
-          student[field_name] = courses.uniq.join(',')
-          student.save
-          field = { status: 200, field_name => student[field_name] }
+          failure = false
+          field.each do |f|
+            course = Integer(f) rescue nil
+            if course
+              courses << course.to_s
+            else
+              failure = true
+              break
+            end
+          end
+          unless failure
+            student[field_name] = courses.uniq.join(',')
+            student.save
+            field = { status: 200, field_name => student[field_name] }
+          else
+            field = { status: 400 }
+          end
         else
           field = { status: 400 }
         end
@@ -149,11 +179,26 @@ class StudentsController < ApplicationController
       field_name = params[:field].to_sym
       if LIST_FIELDS.include? field_name
         courses = student[field_name]
-        courses = courses.split(',')
-        course = params[:field_id]
-        if courses.delete(course)
-          courses = courses.join(',')
-          student[field_name] = courses
+        if courses
+          courses = courses.split(',')
+          pupil = params[:student]
+          field = pupil[field_name]
+          if field
+            field = field.split(',')
+            deleted = false
+            field.each do |f|
+              if courses.delete(f)
+                deleted = true
+              end
+            end
+            if deleted
+              courses = courses.join(',')
+              student[field_name] = courses
+              student.save
+            end
+          end
+        else
+          student[field_name] = String.new
           student.save
         end
         field = { status: 200, field_name => student[field_name] }
