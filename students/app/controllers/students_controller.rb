@@ -116,23 +116,12 @@ class StudentsController < ApplicationController
             courses = String.new
           end
           courses = courses.split(',')
-          failure = false
           field.each do |f|
-            course = Integer(f) rescue nil
-            if course
-              courses << course.to_s
-            else
-              failure = true
-              break
-            end
+            courses << f.to_s
           end
-          unless failure
-            student[field_name] = courses.uniq.join(',')
-            student.save
-            field = { status: 200, field_name => student[field_name] }
-          else
-            field = { status: 400 }
-          end
+          student[field_name] = courses.uniq.join(',')
+          student.save
+          field = { status: 200, field_name => student[field_name] }
         else
           field = { status: 400 }
         end
@@ -169,28 +158,9 @@ class StudentsController < ApplicationController
         pupil = params[:student]
         field = pupil[field_name]
         if field
-          if LIST_FIELDS.include? field_name
-            valid = true
-            courses = field.split(',').uniq
-            courses.each do |c|
-              c.strip!
-              course = Integer(c) rescue nil
-              unless course
-                valid = false
-              end
-            end
-            if valid
-              student[field_name] = courses.join(',')
-              student.save
-              field = { status: 200, field_name => student[field_name] }
-            else
-              field = { status: 400 }
-            end
-          else
-            student[field_name] = field
-            student.save
-            field = { status: 200, field_name => student[field_name] }
-          end
+          student[field_name] = field
+          student.save
+          field = { status: 200, field_name => student[field_name] }
         else
           field = { status: 400 }
         end
