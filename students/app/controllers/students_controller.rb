@@ -5,7 +5,23 @@ class StudentsController < ApplicationController
   LIST_FIELDS = [:courses_taken, :courses_enrolled]
 
   def index
-    students = { status: 200, students: Student.all }
+    query = String.new
+    arguments = Array.new
+    FIELDS.each do |f|
+      if params[f]
+        unless query.empty?
+          query << " AND #{f} = ?"
+        else
+          query << "#{f} = ?"
+        end
+        arguments << params[f]
+      end
+    end
+    if query.empty?
+      students = { status: 200, students: Student.all }
+    else
+      students = Student.where(query, *arguments)
+    end
     render json: students
   end
 
