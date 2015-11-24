@@ -23,32 +23,88 @@ class CourseController < ApplicationController
 
 =end
 
+FIELDS = [:title, :room, :current]
+LIST_FIELDS = [:students]
   #Post Actions
 
   def create 
 
-    course = Course.create
-    render json: course
+    new_course = Course.new
+    course_info = params[:course]
+    
+    FIELDS.each do |f|
+   	new_course[f] = course_info[f]
+    new_course.save
+	end
+    render json: { status:200, new_course:new_course}
 
   end
+
+  def createInField
+
+  	field = Course.find(params[:id])[params[:field]]
+  	field_name = params[:field].to_sym
+
+  	if LIST_FIELDS.include? field_name
+  		
+  		new_course = params[:course]
+  		new_field = new_course[field_name]
+  		split_field = field.split(",")
+  		split_field << new_field # add element to array
+  		field = split_field.join(',')
+  		return render json: {status:200, field:field}
+  		field.save
+  	end
+  		  
+ end
 
 #put
   def update
     course = Course.find(params[:id])
     if course.nil?
-      render json: {status: 500}
+      render json: {status: 400}
     else
-      students = course[params[:field]]
-      course.update(params[:field] => students + "," + params[:id2])
-      render json: course
+      course_info =  params[:course]
+      
+      FIELDS.each do |f|
+      	course[f] = course_info[f]
+      	course.save
+      end
+      render json: {status: 200, course: course}
+
     end 	
+  end
+
+
+
+  def updateField
+    course = Course.find(params[:id])
+    if course.nil?
+      render json: {status: 400}
+    else
+      field_name = params[:field].to_sym
+      
+      if FIELDS.include? field_name
+      	course_info = params[:course]
+      	field_content = course_info[field_name]
+      	
+      	if field_content
+      		course[field_name] = field_content
+     		course.save
+        end
+      end
+    end
+    render json: {status:200, course:course}	
   end
   #Get Actions
 
+
+
   def read 
     courses = Course.all
-    render json: courses
+    render json: {status:200, courses: courses}
   end
+
 
 
   def readOne
@@ -56,17 +112,18 @@ class CourseController < ApplicationController
     if course.nil?
       render json: {status: 500}
     else
-      render json: course
+      render json: {status: 200, course: course}
     end 
   end
 
 
   def readFromField 
-    course = Course.find(params[:id])[params[:field]]
-    if course.nil?
+    field = Course.find(params[:id])[params[:field]]
+
+    if field.nil?
       render json: {status: 500}
     else
-      render json: course
+      render json: {status:200, field: field} # symbol field is rocketed to field value
     end 	
   end
 
@@ -85,17 +142,26 @@ class CourseController < ApplicationController
     course = Course.find(params[:id])
     if course.nil?
       render json: {status: 500}
-    else
-      students = course[params[:field]]
-      field = students.split(',')
-      field.delete(params[:id2])
-      course.update(params[:field] => field.join(','))
-      render json: course
+      
+    else 
+    	field_name = params[:field].to_sym
+ 		
+      	if LIST_FIELDS.include? field_name
+			course_info = params[:course]
+			field_content = course_info[field_name]
+			
+			else 
+				render json: {status: 400}
 
-    end 
+		  if field_content
+		  	course[field_name] = field_content
+		  	course.save
+      	  end
+      	end
+  	  
+  	  render json: {status:200, field_name => field_content }
+
+  	end	  
   end
-
-
-  # Put Actions
 
 end
