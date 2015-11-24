@@ -43,24 +43,27 @@ LIST_FIELDS = [:students]
 
   def createInField
 
-  	field = Course.find(params[:id])[params[:field]]
-  	field_name = params[:field].to_sym
-
+  	field = Course.find(params[:id]) rescue nil
+    field_name = params[:field].to_sym
+    field2 = field[field_name]
+    if field2.nil? 
+      return json: {status:400}
   	if LIST_FIELDS.include? field_name
-  		
-  		new_field = params[:id2]
-  		split_field = field.split(",")
-  		split_field << new_field # add element to array
+  		new_field = params[:field]
+      new_field = new_field.split(",")
+      split_field = field2.split(",")
+      split_field << new_field # add element(s) to array
   		field = split_field.join(',')
   		return render json: {status:200, field:field}
   		field.save
-  	end
+  	  end
+     end
   		  
  end
 
 #put
   def update
-    course = Course.find(params[:id])
+    course = Course.find(params[:id]) rescue nil
     if course.nil?
       render json: {status: 400}
     else
@@ -78,7 +81,7 @@ LIST_FIELDS = [:students]
 
 
   def updateField
-    course = Course.find(params[:id])
+    course = Course.find(params[:id]) rescue nil
     if course.nil?
       render json: {status: 400}
     else
@@ -101,9 +104,11 @@ LIST_FIELDS = [:students]
 
 
   def read 
-    courses = Course.all
+    courses = Course.all 
+    #FIELDS.each do |f|
+    #courses.where({"item = ? and emails"})
     render json: {status:200, courses: courses}
-
+   
 
 
   end
@@ -111,9 +116,9 @@ LIST_FIELDS = [:students]
 
 
   def readOne
-    course = Course.find(params[:id])
+    course = Course.find(params[:id]) rescue nil
     if course.nil?
-      render json: {status: 500}
+      render json: {status: 400}
     else
       render json: {status: 200, course: course}
     end 
@@ -121,10 +126,11 @@ LIST_FIELDS = [:students]
 
 
   def readFromField 
-    field = Course.find(params[:id])[params[:field]]
+    field = Course.find(params[:id]) rescue nil
+    field = field(params[:field]) 
 
     if field.nil?
-      render json: {status: 500}
+      render json: {status: 400}
     else
       render json: {status:200, field: field} # symbol field is rocketed to field value
     end 	
@@ -136,36 +142,45 @@ LIST_FIELDS = [:students]
   # Delete Actions 
 
   def delete
-    course = Course.find(params[:id])
+    course = Course.find(params[:id]) rescue nil
     course = course.delete
     render json: course
   end
 
   def deleteFromField
-    course = Course.find(params[:id])
+    course = Course.find(params[:id]) rescue nil
     if course.nil?
-      render json: {status: 500}
+      render json: {status: 400}
       
     else 
     	field_name = params[:field].to_sym
  		
       	if LIST_FIELDS.include? field_name
-			removable_content = params[:id2]
-			if removable_content
-		  		field_content = course[field_name]
-		  		if field_content
-		  		field_content = field_content.split(',')
-				new_field_content = field_content.delete(removable_content)
-				end
-			else 
-				render json: {status: 400}
+			       removable_content = params[:field]
+			       if removable_content
+		  		      field_content = course[field_name]
+		  		      
+                if field_content
+		  		         field_content = field_content.split(',')
+				           removable_content = removable_content.split(',')
+                  if  removable_content.include? field_content
+                      field_content.delete
 
-      	    end
-      	end
-  	  
-  	  render json: {status:200, field_name => field_content }
+                  else 
+                    render json: {status: 400}
+                  
+                  end
 
-  	end	  
+                end
+
+              end
+                field_content = field_content.delete(removable_content)
+				        field_content.save
+                render json: {status:200, field_name => field_content }
+        end
+      	    
+    end
+  	 
   end
 
 end

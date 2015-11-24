@@ -3,13 +3,13 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   post '/courses', to: 'course#create'
-  post '/courses/:id/:field/:id2', to: 'course#createInField' 
+  post '/courses/:id/:field', to: 'course#createInField' 
 
   get '/courses', to: 'course#read'
   get '/courses/:id', to: 'course#readOne'
   get '/courses/:id/:field', to: 'course#readFromField'
 
-  delete '/courses/:id/:field/:id2', to: 'course#deleteFromField'
+  delete '/courses/:id/:field', to: 'course#deleteFromField'
   delete '/courses/:id', to: 'course#delete'
 
   put '/courses/:id', to: 'course#update'
