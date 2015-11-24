@@ -56,6 +56,41 @@ class StudentsController < ApplicationController
     render json: student
   end
 
+  def create_field
+    student = Student.find(params[:student_id]) rescue nil
+    if student
+      field_name = params[:field].to_sym
+      if LIST_FIELDS.include? field_name
+        pupil = params[:student]
+        field = pupil[field_name]
+        if field
+          course = field
+          course = Integer(course) rescue nil
+          if course
+            courses = student[field_name]
+            unless courses
+              courses = String.new
+            end
+            courses = courses.split(',')
+            courses << course.to_s
+            student[field_name] = courses.uniq.join(',')
+            student.save
+            field = { status: 200, field_name => student[field_name] }
+          else
+            field = { status: 400 }
+          end
+        else
+          field = { status: 400 }
+        end
+      else
+        field = { status: 400 }
+      end
+    else
+      field = { status: 400 }
+    end
+    render json: field
+  end
+
   def read_field
     student = Student.find(params[:student_id]) rescue nil
     if student
@@ -100,6 +135,7 @@ class StudentsController < ApplicationController
           else
             student[field_name] = field
             student.save
+            field = { status: 200, field_name => student[field_name] }
           end
         else
           field = { status: 400 }
