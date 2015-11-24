@@ -44,11 +44,25 @@ class StudentsController < ApplicationController
   def create
     student = Student.new
     pupil = params[:student]
-    FIELDS.each do |f|
-      student[f] = pupil[f]
+    if pupil[Student.primary_key]
+      unless pupil[Student.primary_key].empty?
+        padawan = Student.find(pupil[Student.primary_key]) rescue nil
+        unless padawan
+          student[Student.primary_key] = pupil[Student.primary_key]
+          FIELDS.each do |f|
+            student[f] = pupil[f]
+          end
+          student.save
+          student = { status: 200, student: student }
+        else
+          student = { status: 200, student: padawan }
+        end
+      else
+        student = { status: 400 }
+      end
+    else
+      student = { status: 400 }
     end
-    student.save
-    student = { status: 200, student: student }
     render json: student
   end
 
