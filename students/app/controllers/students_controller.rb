@@ -2,6 +2,7 @@ class StudentsController < ApplicationController
   protect_from_forgery with: :null_session
 
   FIELDS = [:last_name, :first_name, :courses_taken, :courses_enrolled]
+  LIST_FIELDS = [:courses_taken, :courses_enrolled]
 
   def index
     students = { status: 200, students: Student.all }
@@ -79,10 +80,30 @@ class StudentsController < ApplicationController
         pupil = params[:student]
         field = pupil[field_name]
         if field
-          student[field_name] = field
-          student.save
+          if LIST_FIELDS.include? field_name
+            valid = true
+            courses = field.split(',').uniq
+            courses.each do |c|
+              c.strip!
+              course = Integer(c) rescue nil
+              unless course
+                valid = false
+              end
+            end
+            if valid
+              student[field_name] = courses.join(',')
+              student.save
+              field = { status: 200, field_name => student[field_name] }
+            else
+              field = { status: 400 }
+            end
+          else
+            student[field_name] = field
+            student.save
+          end
+        else
+          field = { status: 400 }
         end
-        field = { status: 200, field_name => student[field_name] }
       else
         field = { status: 400 }
       end
