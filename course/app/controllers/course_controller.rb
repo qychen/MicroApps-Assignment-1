@@ -23,8 +23,9 @@ class CourseController < ApplicationController
 
 =end
 
-FIELDS = [:title, :room, :current]
+FIELDS = [:title, :room, :current, :students]
 LIST_FIELDS = [:students]
+
   #Post Actions
 
   def create 
@@ -47,8 +48,7 @@ LIST_FIELDS = [:students]
 
   	if LIST_FIELDS.include? field_name
   		
-  		new_course = params[:course]
-  		new_field = new_course[field_name]
+  		new_field = params[:id2]
   		split_field = field.split(",")
   		split_field << new_field # add element to array
   		field = split_field.join(',')
@@ -103,6 +103,9 @@ LIST_FIELDS = [:students]
   def read 
     courses = Course.all
     render json: {status:200, courses: courses}
+
+
+
   end
 
 
@@ -147,16 +150,17 @@ LIST_FIELDS = [:students]
     	field_name = params[:field].to_sym
  		
       	if LIST_FIELDS.include? field_name
-			course_info = params[:course]
-			field_content = course_info[field_name]
-			
+			removable_content = params[:id2]
+			if removable_content
+		  		field_content = course[field_name]
+		  		if field_content
+		  		field_content = field_content.split(',')
+				new_field_content = field_content.delete(removable_content)
+				end
 			else 
 				render json: {status: 400}
 
-		  if field_content
-		  	course[field_name] = field_content
-		  	course.save
-      	  end
+      	    end
       	end
   	  
   	  render json: {status:200, field_name => field_content }
