@@ -4,7 +4,7 @@ class CreateCourses < ActiveRecord::Migration
 	t.string "room"
 	t.string "title"
 	t.string "students", :default =>"",:null=>true
-
+	t.boolean "current"
       t.timestamps 
     end
   end
