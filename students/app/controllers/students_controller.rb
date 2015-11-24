@@ -61,18 +61,32 @@ class StudentsController < ApplicationController
     if student
       field_name = params[:field].to_sym
       if LIST_FIELDS.include? field_name
-        course = params[:field_id]
-        course = Integer(course) rescue nil
-        if course
+        pupil = params[:student]
+        field = pupil[field_name]
+        if field
+          field = field.split(',')
           courses = student[field_name]
           unless courses
             courses = String.new
           end
           courses = courses.split(',')
-          courses << course.to_s
-          student[field_name] = courses.uniq.join(',')
-          student.save
-          field = { status: 200, field_name => student[field_name] }
+          failure = false
+          field.each do |f|
+            course = Integer(f) rescue nil
+            if course
+              courses << course.to_s
+            else
+              failure = true
+              break
+            end
+          end
+          unless failure
+            student[field_name] = courses.uniq.join(',')
+            student.save
+            field = { status: 200, field_name => student[field_name] }
+          else
+            field = { status: 400 }
+          end
         else
           field = { status: 400 }
         end
@@ -151,11 +165,21 @@ class StudentsController < ApplicationController
         courses = student[field_name]
         if courses
           courses = courses.split(',')
-          course = params[:field_id]
-          if courses.delete(course)
-            courses = courses.join(',')
-            student[field_name] = courses
-            student.save
+          pupil = params[:student]
+          field = pupil[field_name]
+          if field
+            field = field.split(',')
+            deleted = false
+            field.each do |f|
+              if courses.delete(f)
+                deleted = true
+              end
+            end
+            if deleted
+              courses = courses.join(',')
+              student[field_name] = courses
+              student.save
+            end
           end
         else
           student[field_name] = String.new

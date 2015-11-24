@@ -4,13 +4,13 @@ Rails.application.routes.draw do
   get '/students/:student_id/:field', to: 'students#read_field'
 
   post '/students', to: 'students#create'
-  post '/students/:student_id/:field/:field_id', to: 'students#create_field'
+  post '/students/:student_id/:field', to: 'students#create_field'
 
   put '/students/:student_id', to: 'students#update'
   put '/students/:student_id/:field', to: 'students#update_field'
 
   delete '/students/:student_id', to: 'students#delete'
-  delete '/students/:student_id/:field/:field_id', to: 'students#delete_field'
+  delete '/students/:student_id/:field', to: 'students#delete_field'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
