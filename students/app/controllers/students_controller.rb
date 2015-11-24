@@ -149,11 +149,16 @@ class StudentsController < ApplicationController
       field_name = params[:field].to_sym
       if LIST_FIELDS.include? field_name
         courses = student[field_name]
-        courses = courses.split(',')
-        course = params[:field_id]
-        if courses.delete(course)
-          courses = courses.join(',')
-          student[field_name] = courses
+        if courses
+          courses = courses.split(',')
+          course = params[:field_id]
+          if courses.delete(course)
+            courses = courses.join(',')
+            student[field_name] = courses
+            student.save
+          end
+        else
+          student[field_name] = String.new
           student.save
         end
         field = { status: 200, field_name => student[field_name] }
