@@ -32,12 +32,11 @@ LIST_FIELDS = [:students]
 
     new_course = Course.new
     course_info = params[:course]
-    
     FIELDS.each do |f|
    	new_course[f] = course_info[f]
     new_course.save
 	end
-    render json: { status:200, new_course:new_course}
+    render json: { status:200, new_course: new_course}
 
   end
 
@@ -47,7 +46,7 @@ LIST_FIELDS = [:students]
     field_name = params[:field].to_sym
     field2 = field[field_name]
     if field2.nil? 
-      return json: {status:400}
+      return render json: {status:400}
   	if LIST_FIELDS.include? field_name
   		new_field = params[:field]
       new_field = new_field.split(",")
