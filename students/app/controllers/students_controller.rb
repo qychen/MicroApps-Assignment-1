@@ -61,24 +61,18 @@ class StudentsController < ApplicationController
     if student
       field_name = params[:field].to_sym
       if LIST_FIELDS.include? field_name
-        pupil = params[:student]
-        field = pupil[field_name]
-        if field
-          course = field
-          course = Integer(course) rescue nil
-          if course
-            courses = student[field_name]
-            unless courses
-              courses = String.new
-            end
-            courses = courses.split(',')
-            courses << course.to_s
-            student[field_name] = courses.uniq.join(',')
-            student.save
-            field = { status: 200, field_name => student[field_name] }
-          else
-            field = { status: 400 }
+        course = params[:field_id]
+        course = Integer(course) rescue nil
+        if course
+          courses = student[field_name]
+          unless courses
+            courses = String.new
           end
+          courses = courses.split(',')
+          courses << course.to_s
+          student[field_name] = courses.uniq.join(',')
+          student.save
+          field = { status: 200, field_name => student[field_name] }
         else
           field = { status: 400 }
         end
@@ -155,17 +149,20 @@ class StudentsController < ApplicationController
       field_name = params[:field].to_sym
       if LIST_FIELDS.include? field_name
         courses = student[field_name]
-        pupil = params[:student]
-        course = pupil[field_name]
+        courses = courses.split(',')
+        course = params[:field_id]
         if courses.delete(course)
-          courses.save
+          courses = courses.join(',')
+          student[field_name] = courses
+          student.save
         end
-        field = { status: 200, field_name => courses }
+        field = { status: 200, field_name => student[field_name] }
       else
         field = { status: 400 }
       end
     else
       field = { status: 400 }
     end
+    render json: field
   end
 end
