@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
     query = String.new
     arguments = Array.new
     FIELDS.each do |f|
-      if params[f]
+      if params[f] && !(LIST_FIELDS.include? f)
         unless query.empty?
           query << " AND #{f} = ?"
         else
@@ -21,6 +21,22 @@ class StudentsController < ApplicationController
       students = { status: 200, students: Student.all }
     else
       students = Student.where(query, *arguments)
+      failure = false
+      students = students.select { |student|
+        valid = true
+        LIST_FIELDS.each do |field|
+          courses = student[field].split(',').uniq rescue Array.new
+          if params[field]
+            fields = params[field].split(',').uniq
+            unless (fields - courses).empty?
+              valid = false
+              break
+            end
+          end
+        end
+        valid
+      }
+      students = { status: 200, students: students }
     end
     render json: students
   end
