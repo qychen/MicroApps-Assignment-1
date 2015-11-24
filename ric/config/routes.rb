@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   get "students/:id1/firstName" => "students#changeinfo"
   get "students/:id1" => "students#changeinfo"  
 
+  post "students/:id/:field" => "students#courselist"
+  put "students/:id/:field" => "students#overwritecourselist"
+
   get "courses/:id1/room" => "courses#changeinfo"
   get "courses/:id1/title" => "courses#changeinfo"
   get "courses/:id1" => "courses#changeinfo"

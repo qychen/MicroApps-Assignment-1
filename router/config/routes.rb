@@ -16,9 +16,9 @@ Rails.application.routes.draw do
   #put "students/:id1/coursesTaken/:id2" => "students#addcourse"
   #delete "students/:id1/coursesTaken/:id2" => "students#dropcourse"
 
-  post "students/:id/:field" => "students#addcourselist"
-  delete "students/:id/:field" => "students#dropcourselist"
-  put "students/:id/:field" => "students#rewritecourselist"
+  post "students/:id/:field" => "students#courselist"
+  delete "students/:id/:field" => "students#courselist"
+  put "students/:id/:field" => "students#overwritecourselist"
 
   put "students/:id1/lastName" => "students#changeinfo"
   put "students/:id1/firstName" => "students#changeinfo"
