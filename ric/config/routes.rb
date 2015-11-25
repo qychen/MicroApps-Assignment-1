@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   post "courses/:id/:field" => "courses#studentlist"
   put "courses/:id/:field" => "courses#overwritestudentlist"
 
+  post "courses" => "courses#create"
+  delete "courses/:id" => "courses#delete"
+  
   match ':controller(/:id1(/:action(/:id2)))', :via => [:get, :post, :put]
 
 

@@ -3,11 +3,11 @@ require 'net/http'
 class StudentsController < ApplicationController
   protect_from_forgery with: :null_session
 
-  $url_ric = "http://159.203.107.66:80/"
+  #$url_ric = "http://159.203.107.66:80/"
+  $url_ric = "http://localhost:4000/"
   $url_router = "http://45.55.44.135:80/"
-  $url_student = "http://159.203.110.135:3001/"
+  $url_student = "http://159.203.84.31:80/"
   $url_course = "http://159.203.92.173:80/"
-  #$url_course = "http://159.203.110.135:80/"
 
   def courselist
     path = request.path

@@ -46,9 +46,7 @@ Rails.application.routes.draw do
   delete "courses/:id" => "courses#delete"
 
   get "courses" => "courses#doget"
-  get "courses/:id1/room" => "courses#doget"
-  get "courses/:id1/title" => "courses#doget"
-  get "courses/:id1/students" => "courses#doget"
+  get "courses/:id1/:field" => "courses#doget"
   get "courses/:id1" => "courses#doget"
 
   match 'students(/:id1(/:action(/:id2)))', :to => 'students#doget', :via => [:post, :get]
