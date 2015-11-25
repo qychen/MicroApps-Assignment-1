@@ -36,6 +36,10 @@ LIST_FIELDS = [:students]
    	new_course[f] = course_info[f]
     new_course.save
 	end
+	if new_course[:current].nil?
+		new_course[:current] = false
+		new_course.save
+	end
     render json: { status:200, new_course: new_course}
 
   end
