@@ -17,6 +17,18 @@ default: &default
   password: password
   socket: /var/run/mysqld/mysqld.sock
 
+partition_one:
+  <<: *default
+  database: students_partition_one
+
+partition_two:
+  <<: *default
+  database: students_partition_two
+
+partition_three:
+  <<: *default
+  database: students_partition_three
+
 development:
   <<: *default
   database: students_development
