@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+rails s -b 159.203.110.135 -p 3002 -P tmp/pids/partition_two.pid -e partition_two

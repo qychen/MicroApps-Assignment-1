@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+rails s -b 159.203.110.135 -p 3003 -P tmp/pids/partition_three.pid -e partition_three
