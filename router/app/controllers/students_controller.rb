@@ -7,7 +7,7 @@ class StudentsController < ApplicationController
   #$url_ric = "http://159.203.107.66:80/"
   $url_ric = "http://localhost:4000/"
   $url_router = "http://45.55.44.135:80/"
-  $url_student = "http://159.203.110.135:80/"
+  $url_student = "http://159.203.110.135:3001/"
   $url_course = "http://159.203.92.173:80/"
 =begin
   #return student info back; via :get
@@ -133,11 +133,86 @@ class StudentsController < ApplicationController
   end
 
   def create
+  	puts "etete"
+  	puts params[:student]['uni']
 	path = request.path
-	uri = URI($url_student + path)
+	uri = URI($url_ric + path)
+	req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+	req.body = params[:student].to_json
+	response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+	  http.request(req)
+	end
+	ric_result = JSON.parse(response.body)
+	puts "sssddd"
+	puts ric_result
+	if ric_result['status'] == 200
+		results ||= []
+		ric_result['urls'].each do |url|
+			ric_uri = JSON.parse(url)
+			if ric_uri['field'] == "student"
+				real_uri = $url_student + ric_uri['path']
+			else 
+				real_uri = $url_course + ric_uri['path']
+			end
+			uri = URI(real_uri)
+			req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+			if ric_uri['field'] == "student"
+				req.body = params[:student].to_json
+			else
+				req.body = '{"students":"'+params[:student]['uni']+'"}'
+			end
+			res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+			  	http.request(req)
+			end
+			results.push(res.body)
+		end
+		#set result!!
+		@result = results[0]
+	else
+		res = { status: 400 }
+		render json: res
+	end
 
   end
 
+  def delete
+	path = request.path
+	uri = URI($url_ric + path)
+	req = Net::HTTP::Delete.new(uri, initheader = {'Content-Type' =>'application/json'})
+	req.body = params[:student].to_json
+	response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+	  http.request(req)
+	end
+	ric_result = JSON.parse(response.body)
+	puts "sssddd"
+	puts ric_result
+	if ric_result['status'] == 200
+		results ||= []
+		ric_result['urls'].each do |url|
+			ric_uri = JSON.parse(url)
+			if ric_uri['field'] == "student"
+				real_uri = $url_student + ric_uri['path']
+			else 
+				real_uri = $url_course + ric_uri['path']
+			end
+			uri = URI(real_uri)
+			req = Net::HTTP::Delete.new(uri, initheader = {'Content-Type' =>'application/json'})
+			if ric_uri['field'] == "student"
+			else
+				req.body = '{"students":"'+params[:id]+'"}'
+			end
+			res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+			  	http.request(req)
+			end
+			results.push(res.body)
+		end
+		#set result!!
+		@result = results[0]
+	else
+		res = { status: 400 }
+		render json: res
+	end
+  end
   
   def courselist
   	verb = request.request_method
@@ -149,21 +224,21 @@ class StudentsController < ApplicationController
 	uri = URI($url_ric + path)
 	req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
 	#data = '{"courses"=>"'+params[:courses]+'"}'.to_json
-	puts params[:student]
-	puts params[:student].to_json
 	req.body = params[:student].to_json
 	response = Net::HTTP.start(uri.hostname, uri.port) do |http|
 	  http.request(req)
 	end
 	ric_result = JSON.parse(response.body)
-	if ric_result['status'] == "200"
+	puts "sss"
+	puts ric_result
+	if ric_result['status'] == 200
 		#@result ||= []
 		results ||= []
 		ric_result['urls'].each do |url|
 			#req = Net::HTTP::Post.new(url.path)
 			ric_uri = JSON.parse(url)
 			if ric_uri['field'] == "student"
-				real_uri = $url_student + ric_uri['path']
+				real_uri = $url_student + ric_uri['path'] + params[:field]
 			else 
 				real_uri = $url_course + ric_uri['path']
 			end
@@ -171,12 +246,12 @@ class StudentsController < ApplicationController
 			#@test = uri
 			#res = Net::HTTP.post_form(uri, 'q' => 'aaa')
 			if verb == "POST"
-				req = Net::HTTP::Post.new(uri)
+				req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
 			else
-				req = Net::HTTP::Delete.new(uri)
+				req = Net::HTTP::Delete.new(uri, initheader = {'Content-Type' =>'application/json'})
 			end
 			if ric_uri['field'] == "student"
-				req.body = request.body
+				req.body = params[:student].to_json
 			else
 				req.body = '{"students":"'+params[:id]+'"}'
 			end
@@ -187,32 +262,34 @@ class StudentsController < ApplicationController
 			#@result.push(res.body)
 			#@result.push(uri)
 		end
+		#set result!!
+		@result = results[0]
 	else
 		res = { status: 400 }
 		render json: res
 	end
 
-	#set result!!
-	@result = results[0]
   end
 
   def overwritecourselist
   	verb = request.request_method
   	puts request.body
-	#path = request.path.split("/")[-1]
 	path = request.path
+	puts params[:courses]
 	uri = URI($url_ric + path)
-	req = Net::HTTP::Put.new(uri)
-	req.body = request.body
+	req = Net::HTTP::Put.new(uri, initheader = {'Content-Type' =>'application/json'})
+	#data = '{"courses"=>"'+params[:courses]+'"}'.to_json
+	req.body = params[:student].to_json
 	response = Net::HTTP.start(uri.hostname, uri.port) do |http|
 	  http.request(req)
 	end
 	ric_result = JSON.parse(response.body)
-	if ric_result['status'] == "200"
+	if ric_result['status'] == 200
 		#@result ||= []
 		results ||= []
 		ric_result['deleteurls'].each do |url|
 			#req = Net::HTTP::Post.new(url.path)
+			puts url
 			ric_uri = JSON.parse(url)
 			if ric_uri['field'] == "student"
 				real_uri = $url_student + ric_uri['path']
@@ -220,9 +297,13 @@ class StudentsController < ApplicationController
 				real_uri = $url_course + ric_uri['path']
 			end
 			uri = URI(real_uri)
-			req = Net::HTTP::Delete.new(uri)
 			if ric_uri['field'] == "student"
-				req.body = request.body
+				req = Net::HTTP::Put.new(uri, initheader = {'Content-Type' =>'application/json'})
+			else
+				req = Net::HTTP::Delete.new(uri, initheader = {'Content-Type' =>'application/json'})
+			end
+			if ric_uri['field'] == "student"
+				req.body = params[:student].to_json
 			else
 				req.body = '{"students":"'+params[:id]+'"}'
 			end
@@ -235,20 +316,19 @@ class StudentsController < ApplicationController
 			ric_uri = JSON.parse(url)
 			real_uri = $url_course + ric_uri['path']
 			uri = URI(real_uri)
-			req = Net::HTTP::Post.new(uri)
+			req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
 			req.body = '{"students":"'+params[:id]+'"}'
 			res = Net::HTTP.start(uri.hostname, uri.port) do |http|
 			  	http.request(req)
 			end
 			results.push(res.body)
 		end
+		#set result!!
+		@result = results[0]
 	else
 		res = { status: 400 }
 		render json: res
 	end
-
-	#set result!!
-	@result = results[0]
   end
 
 
