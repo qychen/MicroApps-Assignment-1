@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20151124020152) do
   create_table "courses", force: :cascade do |t|
     t.string   "room",       limit: 255
     t.string   "title",      limit: 255
-    t.string   "students",   limit: 255
+    t.string   "students",   limit: 255, default: ""
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "current"
