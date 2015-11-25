@@ -54,7 +54,7 @@ LIST_FIELDS = [:students]
       new_field = new_field[params[:field]]
       new_field = new_field.split(",")
       split_field = field2.split(",")
-      split_field << new_field # add element(s) to array
+      split_field = split_field + new_field # add element(s) to array
   		field[field_name] = split_field.uniq.join(',')
   		field.save
       return render json: {status:200, field:field}
@@ -106,15 +106,48 @@ LIST_FIELDS = [:students]
 
 
 
-  def read 
-    courses = Course.all 
-    #FIELDS.each do |f|
-    #courses.where({"item = ? and emails"})
-    render json: {status:200, courses: courses}
-   
-
-
+  def read  
+    query = String.new
+    arguments = Array.new
+    fields = 0
+    FIELDS.each do |f|
+      if params[f]
+        fields += 1
+      end
+      if params[f] && !(LIST_FIELDS.include? f)
+        unless query.empty?
+          query << " AND #{f} = ?"
+        else 
+          query << "#{f} = ?"
+        end
+        arguments << params[f]
+      end
+    end
+    if fields == 0 
+      courses = {status:200, courses: Course.all}
+    else 
+      courses = Course.where(query,*arguments)
+      failure = false
+      courses = courses.select{ |course|
+        valid = true
+        LIST_FIELDS.each do |field|
+          students = course[field].split(',').uniq rescue Array.new
+          if params[field]
+            fields = params[field].split(',').uniq
+            unless (fields - students).empty?
+              valid = false
+              break
+            end
+        end
+    end
+    valid
+    }
+    courses = {status:200, courses: courses}
   end
+    render json: courses
+  end
+
+
 
 
 
@@ -130,7 +163,7 @@ LIST_FIELDS = [:students]
 
   def readFromField 
     field = Course.find(params[:id]) rescue nil
-    field = field(params[:field]) 
+    field = field[params[:field]] 
 
     if field.nil?
       render json: {status: 400}
@@ -145,46 +178,48 @@ LIST_FIELDS = [:students]
   # Delete Actions 
 
   def delete
-    course = Course.find(params[:id]) rescue nil
+    course = Course.find(params[:id])rescue nil
+    if course.nil? 
+      render json: {status:400}
+    else
     course = course.delete
+    course.save
     render json: course
+  end
+
   end
 
   def deleteFromField
     course = Course.find(params[:id]) rescue nil
     if course.nil?
       render json: {status: 400}
-      
     else 
     	field_name = params[:field].to_sym
+    
  		
       	if LIST_FIELDS.include? field_name
-			       removable_content = params[:course]
-             removable_content2 = removable_content[params[:field]]
-			       if removable_content2
+			       removable_content = params[:course] #retrieve json object
+             removable_content2 = removable_content[params[:field]] #access the field specified
+			     
+             if removable_content2 
 		  		      field_content = course[field_name]
-		  		      
-                if field_content
-		  		         field_content = field_content.split(',')
-				           removable_content = removable_content.split(',')
-                  if  removable_content.include? field_content
-                      field_content.delete
-
-                  else 
-                    render json: {status: 400}
-                  
-                  end
-
+		  		      field_content = field_content.split(',')
+  		          #return render json: field_content
+                removable_content2 = removable_content2.split(',')
+                removable_content2.each do |f|
+                field_content.delete(f)
                 end
-
-              end
-                field_content = field_content.delete(removable_content)
-				        field_content.save
-                render json: {status:200, field_name => field_content }
+                field_content = field_content.uniq.join(',')
+                course[field_name] = field_content 
+                course.save
+                return render json: {status:200, field_name => field_content }
+                
+             end
         end
-      	    
     end
-  	 
   end
+
+
+
 
 end
