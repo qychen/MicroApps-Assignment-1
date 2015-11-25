@@ -48,7 +48,8 @@ class StudentsController < ApplicationController
 			real_uri = $url_course + ric_uri['path']
 		end
 		uri = URI(real_uri)
-		req = Net::HTTP::Put.new(uri)
+		req = Net::HTTP::Put.new(uri, initheader = {'Content-Type' =>'application/json'})
+		req.body = params[:student].to_json
 		res = Net::HTTP.start(uri.hostname, uri.port) do |http|
 		  http.request(req)
 		end
