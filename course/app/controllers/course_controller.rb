@@ -204,7 +204,6 @@ LIST_FIELDS = [:students]
              if removable_content2 
 		  		      field_content = course[field_name]
 		  		      field_content = field_content.split(',')
-  		          #return render json: field_content
                 removable_content2 = removable_content2.split(',')
                 removable_content2.each do |f|
                 field_content.delete(f)
