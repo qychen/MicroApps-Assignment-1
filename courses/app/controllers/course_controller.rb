@@ -98,7 +98,7 @@ LIST_FIELDS = [:students]
       	course_info = params[:course]
       	field_content = course_info[field_name]
       	
-      	if field_content
+        unless field_content.nil?
       		course[field_name] = field_content
      		course.save
         end
