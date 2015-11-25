@@ -7,7 +7,11 @@ class StudentsController < ApplicationController
   def index
     query = String.new
     arguments = Array.new
+    fields = 0
     FIELDS.each do |f|
+      if params[f]
+        fields += 1
+      end
       if params[f] && !(LIST_FIELDS.include? f)
         unless query.empty?
           query << " AND #{f} = ?"
@@ -17,7 +21,7 @@ class StudentsController < ApplicationController
         arguments << params[f]
       end
     end
-    if query.empty?
+    if fields == 0
       students = { status: 200, students: Student.all }
     else
       students = Student.where(query, *arguments)
@@ -55,7 +59,7 @@ class StudentsController < ApplicationController
           student.save
           student = { status: 200, student: student }
         else
-          student = { status: 200, student: padawan }
+          student = { status: 400 }
         end
       else
         student = { status: 400 }
