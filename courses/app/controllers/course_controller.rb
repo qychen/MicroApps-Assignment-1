@@ -207,6 +207,9 @@ LIST_FIELDS = [:students]
 			     
              if removable_content2 
 		  		      field_content = course[field_name]
+					unless field_content
+						field_content = String.new
+					end
 		  		      field_content = field_content.split(',')
                 removable_content2 = removable_content2.split(',')
                 removable_content2.each do |f|
