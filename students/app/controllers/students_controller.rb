@@ -59,7 +59,7 @@ class StudentsController < ApplicationController
           student.save
           student = { status: 200, student: student }
         else
-          student = { status: 200, student: padawan }
+          student = { status: 400 }
         end
       else
         student = { status: 400 }
