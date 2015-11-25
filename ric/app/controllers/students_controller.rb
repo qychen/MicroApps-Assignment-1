@@ -56,7 +56,7 @@ class StudentsController < ApplicationController
     (deleteurls ||= []).push(url1)
     posturls ||= []
     flag = 1
-    list = params[params[:field]].split(",")
+    list = params[params[:field]].split(",") rescue []
     list.each do |courseid|
       uri = URI($url_course + "/courses/"+courseid)
       response = Net::HTTP.get_response(uri) # => String
@@ -80,7 +80,12 @@ class StudentsController < ApplicationController
       #get delete course list
       uri = URI($url_student + "/students/"+studentid+"/"+params[:field])
       response = Net::HTTP.get_response(uri) # => String
-      result = JSON.parse(response.body)[params[:field]].split(",")
+      courselist = JSON.parse(response.body)[params[:field]] 
+      if courselist
+        result = courselist.split(",")
+      else
+        result = []
+      end
       result.each do |courseid|
         url = '{"field": "course", "path": "' + 'courses/' + courseid + "/students" + '"}'
         deleteurls.push(url)

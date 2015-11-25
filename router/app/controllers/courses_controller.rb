@@ -386,6 +386,7 @@ class CoursesController < ApplicationController
 	@result = response.body
 	render json: @result
   end
+
 end
 
 
