@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   post "courses/:id/students" => "courses#studentlist"
   delete "courses/:id/students" => "courses#studentlist"
 
+  put "courses/:id/current" => "courses#current"
   put "courses/:id1/room" => "courses#changeinfo"
   put "courses/:id1/title" => "courses#changeinfo"
   put "courses/:id1" => "courses#changeinfo"
@@ -48,9 +49,6 @@ Rails.application.routes.draw do
   get "courses" => "courses#doget"
   get "courses/:id1/:field" => "courses#doget"
   get "courses/:id1" => "courses#doget"
-
-  match 'students(/:id1(/:action(/:id2)))', :to => 'students#doget', :via => [:post, :get]
-  match 'courses(/:id1(/:action(/:id2)))', :to => 'courses#doget', :via => [:post, :get]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -219,7 +219,8 @@ class StudentsController < ApplicationController
   end
   
   def courselist
-  	verb = request.request_method
+  	if params[:field] == "courses_enrolled" || params[:field] == "courses_taken"
+  	verb = request.request_method 
   	puts request.body
 	#path = request.path.split("/")[-1]
 	#uri = URI($url_ric + "/students/"+params[:id]+"/courselist")
@@ -269,6 +270,10 @@ class StudentsController < ApplicationController
 		#set result!!
 		@result = results[0]
 		render json: @result
+	else
+		res = { status: 400 }
+		render json: res
+	end
 	else
 		res = { status: 400 }
 		render json: res
