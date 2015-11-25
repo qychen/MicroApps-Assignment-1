@@ -24,24 +24,28 @@ Rails.application.routes.draw do
   put "students/:id1/firstName" => "students#changeinfo"
   put "students/:id1" => "students#changeinfo"
 
-  post "students/" => "students#create"
-  delete "students/:id1" => "students#delete"
+  post "students" => "students#create"
+  delete "students/:id" => "students#delete"
 
-  get "student/" => "students#doget"
+  get "students" => "students#doget"
   get "students/:id1" => "students#doget"
   get "students/:id1/:field" => "students#doget"
 
 
   # -------------  Courses ------------------------
 
-  put "courses/:id1/students/:id2" => "courses#addstudent"
-  delete "courses/:id1/students/:id2" => "courses#dropstudent"
+  put "courses/:id/students" => "courses#overwritestudentlist"
+  post "courses/:id/students" => "courses#studentlist"
+  delete "courses/:id/students" => "courses#studentlist"
 
   put "courses/:id1/room" => "courses#changeinfo"
   put "courses/:id1/title" => "courses#changeinfo"
   put "courses/:id1" => "courses#changeinfo"
 
-  get "courses/" => "courses#doget"
+  post "courses" => "courses#create"
+  delete "courses/:id" => "courses#delete"
+
+  get "courses" => "courses#doget"
   get "courses/:id1/room" => "courses#doget"
   get "courses/:id1/title" => "courses#doget"
   get "courses/:id1/students" => "courses#doget"

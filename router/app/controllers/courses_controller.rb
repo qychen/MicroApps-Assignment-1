@@ -1,11 +1,12 @@
 require 'net/http'
+require 'json'
 
 class CoursesController < ApplicationController
   protect_from_forgery with: :null_session
 
-  $url_ric = "http://45.55.44.135:4000/"
-  $url_router = "http://45.55.44.135:3000/"
-  $url_student = "http://159.203.110.135:80/"
+  $url_ric = "http://localhost:4000/"
+  $url_router = "http://45.55.44.135:80/"
+  $url_student = "http://159.203.110.135:3001/"
   $url_course = "http://159.203.92.173:80/"
 
   def changeinfo
@@ -100,12 +101,41 @@ class CoursesController < ApplicationController
 	@result = results[0]
   end
 
+  def create
+	path = request.path
+	uri = URI($url_course + path)
+	req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+	req.body = params[:course].to_json
+	response = Net::HTTP.start(uri.hostname, uri.port) do |http|
+	  http.request(req)
+	end
+	ric_result = JSON.parse(response.body)
+	@result = response.body
+
+  end
+
+  def delete
+	path = request.path
+	uri = URI($url_course + path)
+	req = Net::HTTP::Delete.new(uri)
+	res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+	  	http.request(req)
+	end
+	@result = res.body
+
+  end
 
   def doget
 	path = request.path
-	uri = URI($url_student + path)
+	uri = URI($url_course + path)
 	response = Net::HTTP.get_response(uri) # => String
 	@result = response.body
 
   end
 end
+
+
+
+
+
+

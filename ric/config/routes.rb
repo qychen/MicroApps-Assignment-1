@@ -1,15 +1,23 @@
 Rails.application.routes.draw do
 
-  get "students/:id1/lastName" => "students#changeinfo"
-  get "students/:id1/firstName" => "students#changeinfo"
+  get "students/:id1/:field" => "students#changeinfo"
   get "students/:id1" => "students#changeinfo"  
+  get "students" => "students#changeinfo"  
 
   post "students/:id/:field" => "students#courselist"
   put "students/:id/:field" => "students#overwritecourselist"
 
-  get "courses/:id1/room" => "courses#changeinfo"
-  get "courses/:id1/title" => "courses#changeinfo"
+  post "students" => "students#create"
+  delete "students/:id" => "students#delete"
+
+  # -------------  Courses ------------------------
+
+  get "courses/:id1/:field" => "courses#changeinfo"
   get "courses/:id1" => "courses#changeinfo"
+  get "courses" => "courses#changeinfo"
+
+  post "courses/:id/:field" => "courses#studentlist"
+  put "courses/:id/:field" => "courses#overwritestudentlist"
 
   match ':controller(/:id1(/:action(/:id2)))', :via => [:get, :post, :put]
 
