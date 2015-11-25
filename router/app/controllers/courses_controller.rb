@@ -34,7 +34,7 @@ class CoursesController < ApplicationController
 	end
 	#set result!!
 	@result = results[0]
-
+	render json: @result
   end
 
   def addstudent
@@ -67,7 +67,7 @@ class CoursesController < ApplicationController
 
 	#set result!!
 	@result = results[0]
-
+	render json: @result
   end
 
   def dropcourse
@@ -100,6 +100,7 @@ class CoursesController < ApplicationController
 
 	#set result!!
 	@result = results[0]
+	render json: @result
   end
 
 
@@ -165,6 +166,7 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -245,6 +247,7 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -306,6 +309,7 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -367,6 +371,7 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -379,7 +384,7 @@ class CoursesController < ApplicationController
 	uri = URI($url_course + path)
 	response = Net::HTTP.get_response(uri) # => String
 	@result = response.body
-
+	render json: @result
   end
 end
 
