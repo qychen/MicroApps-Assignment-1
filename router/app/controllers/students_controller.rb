@@ -56,7 +56,7 @@ class StudentsController < ApplicationController
 	end
 	#set result!!
 	@result = results[0]
-
+	render json: @result
   end
 
   def addcourse
@@ -89,7 +89,7 @@ class StudentsController < ApplicationController
 
 	#set result!!
 	@result = results[0]
-
+	render json: @result
   end
 
   def dropcourse
@@ -122,6 +122,7 @@ class StudentsController < ApplicationController
 
 	#set result!!
 	@result = results[0]
+	render json: @result
   end
 
   def doget
@@ -129,7 +130,7 @@ class StudentsController < ApplicationController
 	uri = URI($url_student + path)
 	response = Net::HTTP.get_response(uri) # => String
 	@result = response.body
-
+	render json: @result
   end
 
   def create
@@ -168,6 +169,7 @@ class StudentsController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -208,6 +210,7 @@ class StudentsController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -264,6 +267,7 @@ class StudentsController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
+		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
