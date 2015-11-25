@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  get '*path', to: 'students#read'
+  get '/students', to: 'students#index'
+  get '/students/:student_id', to: 'students#read'
+  get '/students/:student_id/*path', to: 'students#read'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
