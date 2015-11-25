@@ -4,8 +4,8 @@ require 'json'
 class CoursesController < ApplicationController
   protect_from_forgery with: :null_session
 
-  $url_ric = "http://159.203.107.66:80/"
-  #$url_ric = "http://localhost:4000/"
+  #$url_ric = "http://159.203.107.66:80/"
+  $url_ric = "http://localhost:4000/"
   $url_router = "http://45.55.44.135:80/"
   $url_student = "http://159.203.84.31:80/"
   $url_course = "http://159.203.92.173:80/"
@@ -26,7 +26,8 @@ class CoursesController < ApplicationController
 			real_uri = $url_course + ric_uri['path']
 		end
 		uri = URI(real_uri)
-		req = Net::HTTP::Put.new(uri)
+		req = Net::HTTP::Put.new(uri, initheader = {'Content-Type' =>'application/json'})
+		req.body = params[:course].to_json
 		res = Net::HTTP.start(uri.hostname, uri.port) do |http|
 		  http.request(req)
 		end
@@ -34,7 +35,7 @@ class CoursesController < ApplicationController
 	end
 	#set result!!
 	@result = results[0]
-	render json: @result
+
   end
 
   def addstudent
@@ -67,7 +68,7 @@ class CoursesController < ApplicationController
 
 	#set result!!
 	@result = results[0]
-	render json: @result
+
   end
 
   def dropcourse
@@ -100,7 +101,6 @@ class CoursesController < ApplicationController
 
 	#set result!!
 	@result = results[0]
-	render json: @result
   end
 
 
@@ -166,7 +166,6 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
-		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -247,7 +246,6 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
-		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -309,7 +307,6 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
-		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -371,7 +368,6 @@ class CoursesController < ApplicationController
 		end
 		#set result!!
 		@result = results[0]
-		render json: @result
 	else
 		res = { status: 400 }
 		render json: res
@@ -384,7 +380,68 @@ class CoursesController < ApplicationController
 	uri = URI($url_course + path)
 	response = Net::HTTP.get_response(uri) # => String
 	@result = response.body
-	render json: @result
+
+  end
+
+  def current
+	path = request.path
+
+    courses_uri = URI($url_course + "/courses/"+params[:id])
+    response = Net::HTTP.get_response(courses_uri) # => String
+    course_result = JSON.parse(response.body)['course']
+    if course_result['current'] == true
+    	field_old = 'courses_enrolled'
+    	field_new = 'courses_taken'
+    else
+    	field_old = 'courses_taken'
+    	field_new = 'courses_enrolled'
+    end
+
+    puts course_result
+
+	if JSON.parse(response.body)['status'] == 200
+		puts "333333333"
+		students_id =course_result['students'].split(",") rescue []
+		students_id.each do |studentid|
+
+			real_uri = $url_student +  'students/' + studentid + '/' + field_old
+			puts "77777"
+			puts real_uri
+			uri = URI(real_uri)
+			req = Net::HTTP::Delete.new(uri, initheader = {'Content-Type' =>'application/json'})
+			req.body = '{"'+field_old+'":"'+course_result['id'].to_s+'"}'
+			res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+			  	http.request(req)
+			end
+
+			real_uri = $url_student + 'students/' + studentid + '/' + field_new
+			puts "9988888"
+			puts real_uri
+			uri = URI(real_uri)
+			req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' =>'application/json'})
+			req.body = '{"'+field_new+'":"'+course_result['id'].to_s+'"}'
+			res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+			  	http.request(req)
+			end
+
+		end
+		courses_uri = $url_course + 'courses/'+params[:id] + '/current'
+		puts "666"
+		puts courses_uri
+		uri = URI(courses_uri)
+		req = Net::HTTP::Put.new(uri, initheader = {'Content-Type' =>'application/json'})
+		req.body = params[:course].to_json
+		res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+		  http.request(req)
+		end
+		render json: res.body
+
+	else
+		res = { status: 400 }
+		render json: res
+	end
+
+
   end
 
 end
